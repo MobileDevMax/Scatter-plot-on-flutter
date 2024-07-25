@@ -1,0 +1,89 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Scatter Plot',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: ScatterPlotScreen(),
+    );
+  }
+}
+
+class ScatterPlotScreen extends StatelessWidget {
+  final List<Point> points = [
+    Point(1, 5),
+    Point(2, 3),
+    Point(3, 6),
+    Point(4, 8),
+    Point(5, 2),
+    Point(6, 9),
+    Point(7, 4),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Scatter Plot'),
+      ),
+      body: Center(
+        child: Container(
+          width: 300,
+          height: 300,
+          child: CustomPaint(
+            painter: ScatterPlotPainter(points),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Point {
+  final double x;
+  final double y;
+
+  Point(this.x, this.y);
+}
+
+class ScatterPlotPainter extends CustomPainter {
+  final List<Point> points;
+
+  ScatterPlotPainter(this.points);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double xScale = size.width / 10; // Graph width
+    final double yScale = size.height / 10; // Graph height
+    
+    // Drawing points on a graph
+    for (final point in points) {
+      final double x = point.x * xScale;
+      final double y = size.height - (point.y * yScale); // Invert Y for correct display
+      canvas.drawCircle(Offset(x, y), 5, Paint()..color = Colors.blue);
+    }
+
+    // Drawing the axes
+    final Paint axisPaint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 2;
+
+    // X axis
+    canvas.drawLine(Offset(0, size.height), Offset(size.width, size.height), axisPaint);
+    // Y axis
+    canvas.drawLine(Offset(0, 0), Offset(0, size.height), axisPaint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
